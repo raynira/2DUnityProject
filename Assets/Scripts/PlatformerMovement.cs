@@ -23,10 +23,10 @@ public class PlatformerMovement : MonoBehaviour
     [SerializeField] private float _groundCheckRadius;
     [SerializeField] private LayerMask _groundLayerMask;
 
-    private Rigidbody2D _rididbody;
+    private Rigidbody2D _rigidBody;
 
     private bool _grounded = false;
-    private bool _jumpPressedThisFrame = false;
+    private bool _jumpPressed = false;
     private bool _jumpHeld = false;
     private bool _earlyJumpTimerActive = false;
 
@@ -36,11 +36,11 @@ public class PlatformerMovement : MonoBehaviour
     private bool _doubleJump = false;
 
     public bool IsGrounded { get { return _grounded; } }
-    public Vector2 Velocity { get { return _rididbody.linearVelocity; } }
+    public Vector2 Velocity { get { return _rigidBody.linearVelocity; } }
 
     void Start()
     {
-        _rididbody = GetComponent<Rigidbody2D>();
+        _rigidBody = GetComponent<Rigidbody2D>();
     }
 
     void Update()
@@ -77,7 +77,7 @@ public class PlatformerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         _grounded = Physics2D.OverlapCircle(_groundCheckTarget.position, _groundCheckRadius, _groundLayerMask);
-        Vector2 velocity = _rididbody.linearVelocity;
+        Vector2 velocity = _rigidBody.linearVelocity;
 
         velocity.y += _gravity * Time.fixedDeltaTime;
 
@@ -101,19 +101,19 @@ public class PlatformerMovement : MonoBehaviour
 
         float velocityDifference = horizontalDirection - velocity.x;
         float deltaAccleration = acceleration * Time.fixedDeltaTime;
-        float finallAcceleration = Mathf.Clamp(velocityDifference, -deltaAccleration, deltaAccleration);
-        velocity.x += finallAcceleration;
+        float finalAcceleration = Mathf.Clamp(velocityDifference, -deltaAccleration, deltaAccleration);
+        velocity.x += finalAcceleration;
 
         bool coyote = _timeSinceLeftGround <= _coyoteTime;
         bool earlyJump = _timeSinceJumpPressed <= _earlyJumpTime;
 
         // jump
-        if ((_grounded || coyote) && (_jumpPressedThisFrame || earlyJump))
+        if ((_grounded || coyote) && (_jumpPressed || earlyJump))
         {
             // SfxManagar.Instance.PlaySFX(_jumpSFX);
             velocity.y = _jumpSpeed;
             _grounded = false;
-            _jumpPressedThisFrame = false;
+            _jumpPressed = false;
             _earlyJumpTimerActive = false;
             _timeSinceJumpPressed = float.MaxValue;
         }
@@ -124,17 +124,17 @@ public class PlatformerMovement : MonoBehaviour
             _doubleJump = true;
         }
 
-        if (!_grounded && _doubleJump && _jumpPressedThisFrame)
+        if (!_grounded && _doubleJump && _jumpPressed)
         {
             // SfxManagar.Instance.PlaySFX(_jumpSFX);
             _doubleJump = false;
             velocity.y = _jumpSpeed;
-            _jumpPressedThisFrame = false;
+            _jumpPressed = false;
         }
 
-        _rididbody.linearVelocity = velocity;
+        _rigidBody.linearVelocity = velocity;
 
-        _jumpPressedThisFrame = false;
+        _jumpPressed = false;
     }
 
     private void OnDrawGizmos()
@@ -148,7 +148,7 @@ public class PlatformerMovement : MonoBehaviour
 
     private void OnJumpPressed()
     {
-        _jumpPressedThisFrame = true;
+        _jumpPressed = true;
         _jumpHeld = true;
 
         _earlyJumpTimerActive = true;
