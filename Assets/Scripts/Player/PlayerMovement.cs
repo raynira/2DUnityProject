@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header ("Movement Speed Parameters")]
+    [Header("Movement Speed Parameters")]
     [SerializeField] private float _gravity = -20;
     [SerializeField] private float _runSpeed = 8;
     [SerializeField] private float _jumpSpeed = 15;
@@ -11,14 +11,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _airAcceleration = 20;
     [SerializeField] private float _airDeceleration = 10f;
 
-    [Header ("Jump Parameters")]
+    [Header("Jump Parameters")]
     [SerializeField] private float _coyoteTime = 0.1f;
     [SerializeField] private float _earlyJumpTime = 0.1f;
     [SerializeField] private bool _canDoubleJump = true;
 
     // [SerializeField] private AudioClip _jumpSFX;
 
-    [Header ("Ground Check Parameters")]
+    [Header("Ground Check Parameters")]
     [SerializeField] private Transform _groundCheckTarget;
     [SerializeField] private float _groundCheckRadius;
     [SerializeField] private LayerMask _groundLayerMask;
