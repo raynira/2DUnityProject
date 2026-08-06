@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlatformerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     [Header ("Movement Speed Parameters")]
     [SerializeField] private float _gravity = -20;
