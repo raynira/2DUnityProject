@@ -3,23 +3,35 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
-    public int Health = 10;
+    public int _maxEnemyHealth = 2;
+    private int _currentEnemyHealth;
 
-    [Header("Movement")]
+    [Header("Movement Speed Parameters")]
     [SerializeField] private Rigidbody2D _rigidbody;
     [SerializeField] private float _movementSpeed = 1.75f;
     [SerializeField] private float _acceleration = 60;
     [SerializeField] private float _deceleration = 70;
-    [SerializeField] private float _gravity = -40;
 
-    [Header("Ground check")]
+    [Header("Jump Parameters")]
+    [SerializeField] private float _gravity = -35;
+    [SerializeField] private float _jumpSpeed = 8f;
+    [SerializeField] private float _jumpCooldown = 0.3f;
+    [SerializeField] private Transform _jumpCheckLeft;
+    [SerializeField] private Transform _jumpCheckRight;
+    [SerializeField] private float _jumpCheckRadius = 0.1f;
+    [SerializeField] private Transform _backUpCheckLeft;
+    [SerializeField] private Transform _backUpCheckRight;
+    [SerializeField] private float _backUpCheckRadius = 0.1f;
+    private float _jumpCooldownTimer = 0f;
+
+    [Header("Ground Check Parameters")]
     [SerializeField] private LayerMask _groundLayerMask;
+    [SerializeField] private LayerMask _wallLayerMask;
     [SerializeField] private LayerMask _playerLayerMask;
+    [SerializeField] private LayerMask _obstacleLayerMask;
     [SerializeField] private Transform _groundCheckTarget;
     [SerializeField] private Transform _groundCheckLeft;
     [SerializeField] private Transform _groundCheckRight;
-    [SerializeField] private Transform _wallCheckLeft;
-    [SerializeField] private Transform _wallCheckRight;
     [SerializeField] private float _groundCheckRadius;
     [SerializeField] private float _ledgeCheckRadius = 0.05f;
 
@@ -39,6 +51,29 @@ public class EnemyAI : MonoBehaviour
     private Vector2 _lastKnownPlayerPosition;
     private float _seekTimer = 0f;
 
+    void Start()
+    {
+        _currentEnemyHealth = _maxEnemyHealth;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        _currentEnemyHealth -= damage;
+
+        if (_currentEnemyHealth <= 0)
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            TakeDamage(DamageMapping._spikeDamage);
+        }
+    }
+
     private void FixedUpdate()
     {
         _grounded = Physics2D.OverlapCircle(_groundCheckTarget.position, _groundCheckRadius, _groundLayerMask);
@@ -46,29 +81,31 @@ public class EnemyAI : MonoBehaviour
 
         velocity.y += _gravity * Time.fixedDeltaTime;
 
+        if (_jumpCooldownTimer > 0f) _jumpCooldownTimer -= Time.fixedDeltaTime;
+
         bool leftGrounded = Physics2D.OverlapCircle(_groundCheckLeft.position, _ledgeCheckRadius, _groundLayerMask);
         bool rightGrounded = Physics2D.OverlapCircle(_groundCheckRight.position, _ledgeCheckRadius, _groundLayerMask);
-        bool leftWall = Physics2D.OverlapCircle(_wallCheckLeft.position, _ledgeCheckRadius);
-        bool rightWall = Physics2D.OverlapCircle(_wallCheckRight.position, _ledgeCheckRadius);
 
-        bool ledgeOnLeft = !leftGrounded && rightGrounded && _canStayOnPlatform;
-        bool ledgeOnRight = !rightGrounded && leftGrounded && _canStayOnPlatform;
+        bool jumpLeft = Physics2D.OverlapCircle(_jumpCheckLeft.position, _jumpCheckRadius, _wallLayerMask);
+        bool jumpRight = Physics2D.OverlapCircle(_jumpCheckRight.position, _jumpCheckRadius, _wallLayerMask);
 
-        if (ledgeOnLeft || leftWall)
+        bool backUpLeft = Physics2D.OverlapCircle(_backUpCheckLeft.position, _backUpCheckRadius, _wallLayerMask);
+        bool backUpRight = Physics2D.OverlapCircle(_backUpCheckRight.position, _backUpCheckRadius, _wallLayerMask);
+
+        bool ledgeOnLeft = !leftGrounded && rightGrounded;
+        bool ledgeOnRight = !rightGrounded && leftGrounded;
+
+        if (ledgeOnLeft)
         {
-            Debug.Log("Left ledge detected!");
-
             _direction = 1;
 
-            if (ledgeOnLeft) velocity.x = 0f;
+            velocity.x = 0f;
         }
-        else if (ledgeOnRight || rightWall)
+        else if (ledgeOnRight)
         {
-            Debug.Log("Right ledge detected!");
-
             _direction = -1;
 
-            if (ledgeOnRight) velocity.x = 0f;
+            velocity.x = 0f;
         }
 
         bool seesPlayer = false;
@@ -119,6 +156,27 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
+        bool isChasing = _isFollowingPlayer && (seesPlayer || _hasLastKnownPlayerPosition);
+        bool isApproachingWall = (jumpLeft && _direction < 0) || (jumpRight && _direction > 0);
+        bool canJump = isChasing && _grounded && _jumpCooldownTimer <= 0f;
+
+        if (backUpLeft && _direction < 0)
+        {
+            canJump = false;
+            _direction = 1;
+        }
+        else if (backUpRight && _direction > 0)
+        {
+            canJump = false;
+            _direction = -1;
+        }
+
+        if (canJump && isApproachingWall)
+        {
+            velocity.y = _jumpSpeed;
+            _jumpCooldownTimer = _jumpCooldown;
+        }
+
         float horizontalDirection = _direction * _movementSpeed;
 
         float acceleration = 0;
@@ -152,8 +210,14 @@ public class EnemyAI : MonoBehaviour
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(_groundCheckLeft.position, 0.05f);
             Gizmos.DrawWireSphere(_groundCheckRight.position, 0.05f);
-            Gizmos.DrawWireSphere(_wallCheckLeft.position, 0.05f);
-            Gizmos.DrawWireSphere(_wallCheckRight.position, 0.05f);
+
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(_jumpCheckLeft.position, _jumpCheckRadius);
+            Gizmos.DrawWireSphere(_jumpCheckRight.position, _jumpCheckRadius);
+
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(_backUpCheckLeft.position, _backUpCheckRadius);
+            Gizmos.DrawWireSphere(_backUpCheckRight.position, _backUpCheckRadius);
 
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(transform.position, _playerSensorRadius);

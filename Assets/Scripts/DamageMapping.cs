@@ -11,8 +11,8 @@ public class DamageMapping : MonoBehaviour
     }
     public EnemyType _enemyType;
 
-    private int _spikeDamage = 1;
-    private int _enemyDamage = 1;
+    public static int _spikeDamage = 1;
+    public static int _enemyDamage = 1;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

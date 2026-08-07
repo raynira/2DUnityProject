@@ -5,7 +5,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement Speed Parameters")]
     [SerializeField] private float _gravity = -20;
     [SerializeField] private float _runSpeed = 8;
-    [SerializeField] private float _jumpSpeed = 15;
+    [SerializeField] private float _jumpSpeed = 8;
     [SerializeField] private float _acceleration = 60;
     [SerializeField] private float _deceleration = 70;
     [SerializeField] private float _airAcceleration = 20;
@@ -14,7 +14,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("Jump Parameters")]
     [SerializeField] private float _coyoteTime = 0.1f;
     [SerializeField] private float _earlyJumpTime = 0.1f;
-    [SerializeField] private bool _canDoubleJump = true;
 
     // [SerializeField] private AudioClip _jumpSFX;
 
@@ -27,7 +26,6 @@ public class PlayerMovement : MonoBehaviour
 
     private bool _grounded = false;
     private bool _jumpPressed = false;
-    private bool _jumpHeld = false;
     private bool _earlyJumpTimerActive = false;
 
     private float _timeSinceLeftGround = 0;
@@ -65,13 +63,11 @@ public class PlayerMovement : MonoBehaviour
     private void OnEnable()
     {
         InputManager.Instance.JumpInputPressed += OnJumpPressed;
-        InputManager.Instance.JumpInputReleased += OnJumpReleased;
     }
 
     private void OnDisable()
     {
         InputManager.Instance.JumpInputPressed -= OnJumpPressed;
-        InputManager.Instance.JumpInputReleased -= OnJumpReleased;
     }
 
     private void FixedUpdate()
@@ -149,14 +145,8 @@ public class PlayerMovement : MonoBehaviour
     private void OnJumpPressed()
     {
         _jumpPressed = true;
-        _jumpHeld = true;
 
         _earlyJumpTimerActive = true;
         _timeSinceJumpPressed = 0;
-    }
-
-    private void OnJumpReleased()
-    {
-        _jumpHeld = false;
     }
 }
