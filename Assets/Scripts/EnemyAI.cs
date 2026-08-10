@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
+    public DamageMapping damage;
     public int _maxEnemyHealth = 2;
     private int _currentEnemyHealth;
 
@@ -70,7 +71,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Obstacle"))
         {
-            TakeDamage(DamageMapping._spikeDamage);
+            TakeDamage(damage._trapDamage);
         }
     }
 
