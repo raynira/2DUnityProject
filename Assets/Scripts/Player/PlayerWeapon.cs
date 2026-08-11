@@ -12,5 +12,9 @@ public class PlayerWeapon : MonoBehaviour
         {
             enemy.TakeDamage((int) _damage);
         }
+        else if (collision.gameObject.CompareTag("Destructible"))
+        {
+            Destroy(collision.gameObject);
+        }
     }
 }
