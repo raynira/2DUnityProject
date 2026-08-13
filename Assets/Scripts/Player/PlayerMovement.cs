@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _deceleration = 70;
     [SerializeField] private float _airAcceleration = 20;
     [SerializeField] private float _airDeceleration = 10f;
+    private float _defaultSpeed;
 
     [Header("Jump Parameters")]
     [SerializeField] private float _coyoteTime = 0.1f;
@@ -39,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
+        _defaultSpeed = _runSpeed;
     }
 
     void Update()
@@ -68,6 +70,22 @@ public class PlayerMovement : MonoBehaviour
     private void OnDisable()
     {
         InputManager.Instance.JumpInputPressed -= OnJumpPressed;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            _runSpeed = 0f;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            _runSpeed = _defaultSpeed;
+        }
     }
 
     private void FixedUpdate()

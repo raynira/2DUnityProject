@@ -18,6 +18,11 @@ public class PlayerAttack : MonoBehaviour
         InputManager.Instance.AttackInput -= OnAttack;
     }
 
+    void Awake()
+    {
+        _melee.SetActive(false);
+    }
+
     void Update()
     {
         CheckMeleeTimer();

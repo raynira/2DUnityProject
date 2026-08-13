@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DamageMapping : MonoBehaviour
+public class TrapController : MonoBehaviour
 {
     [Header("Damage Parameters")]
     public PlayerHealth player;
@@ -25,18 +25,25 @@ public class DamageMapping : MonoBehaviour
                 case EnemyType.Trap:
                     player.TakeDamage(_trapDamage);
 
-                    HandlePlayerBounce(collision.gameObject);
+                    HandleBounce(collision.gameObject);
                     break;
                 case EnemyType.Enemy:
                     player.TakeDamage(_enemyDamage);
                     break;
             }
         }
+        else if (collision.gameObject.CompareTag("Enemy"))
+        {
+            if (_enemyType == EnemyType.Trap)
+            {
+                HandleBounce(collision.gameObject);
+            }
+        }
     }
 
-    private void HandlePlayerBounce(GameObject player)
+    private void HandleBounce(GameObject entity)
     {
-        Rigidbody2D _rigidbody = player.GetComponent<Rigidbody2D>();
+        Rigidbody2D _rigidbody = entity.GetComponent<Rigidbody2D>();
 
         if (_rigidbody)
         {

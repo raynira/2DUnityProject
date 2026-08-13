@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
-    public DamageMapping damage;
+    public TrapController damage;
     public int _maxEnemyHealth = 2;
     private int _currentEnemyHealth;
 
@@ -12,6 +12,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float _movementSpeed = 1.75f;
     [SerializeField] private float _acceleration = 60;
     [SerializeField] private float _deceleration = 70;
+    private float _defaultSpeed;
 
     [Header("Jump Parameters")]
     [SerializeField] private float _gravity = -35;
@@ -55,6 +56,7 @@ public class EnemyAI : MonoBehaviour
     void Start()
     {
         _currentEnemyHealth = _maxEnemyHealth;
+        _defaultSpeed = _movementSpeed;
     }
 
     public void TakeDamage(int damage)
@@ -71,7 +73,22 @@ public class EnemyAI : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Obstacle"))
         {
-            TakeDamage(damage._trapDamage);
+            if (damage._trapDamage > 0)
+            {
+                TakeDamage(damage._trapDamage);
+            }
+        }
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            _movementSpeed = 0f;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            _movementSpeed = _defaultSpeed;
         }
     }
 
@@ -118,8 +135,7 @@ public class EnemyAI : MonoBehaviour
 
             for (int i = 0; i < colliders.Count; i++)
             {
-                if (!colliders[i].CompareTag("Player"))
-                    continue;
+                if (!colliders[i].CompareTag("Player")) continue;
 
                 seesPlayer = true;
 
@@ -152,8 +168,8 @@ public class EnemyAI : MonoBehaviour
                 }
 
                 _seekTimer -= Time.fixedDeltaTime;
-                if (_seekTimer <= 0f)
-                    _hasLastKnownPlayerPosition = false;
+
+                if (_seekTimer <= 0f) _hasLastKnownPlayerPosition = false;
             }
         }
 
