@@ -2,8 +2,15 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    public static GameController Instance { get; private set; }
+
     public GameObject _gameOverScreen;
     public GameObject _gameHealthUI;
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -12,7 +19,7 @@ public class GameController : MonoBehaviour
         _gameHealthUI.SetActive(true);
     }
 
-    void GameOverScreen()
+    public void GameOverScreen()
     {
         _gameHealthUI.SetActive(false);
         _gameOverScreen.SetActive(true);
