@@ -52,9 +52,10 @@ public class PlayerHealth : MonoBehaviour
 
         health.UpdateHearts(_currentHealth);
 
-        if (_currentHealth <= 0)
+        if (_currentHealth == 0)
         {
             OnPlayerDied.Invoke();
+            gameObject.SetActive(false);
         }
     }
 }

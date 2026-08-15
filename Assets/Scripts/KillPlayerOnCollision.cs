@@ -6,7 +6,7 @@ public class KillPlayerOnCollision : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
             GameController.Instance.GameOverScreen();
         }
     }
