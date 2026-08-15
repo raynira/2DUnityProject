@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class GameController : MonoBehaviour
         _gameHealthUI.SetActive(true);
         _gameOverScreen.SetActive(false);
 
-        // implement logic for buttons later
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Time.timeScale = 1f;
     }
 }

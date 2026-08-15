@@ -9,6 +9,7 @@ TagManager:
   - Obstacle
   - Enemy
   - Destructible
+  - Key
   layers:
   - Default
   - TransparentFX

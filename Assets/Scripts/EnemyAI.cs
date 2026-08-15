@@ -34,6 +34,8 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private Transform _groundCheckTarget;
     [SerializeField] private Transform _groundCheckLeft;
     [SerializeField] private Transform _groundCheckRight;
+    [SerializeField] private Transform _wallCheckLeft;
+    [SerializeField] private Transform _wallCheckRight;
     [SerializeField] private float _groundCheckRadius;
     [SerializeField] private float _ledgeCheckRadius = 0.05f;
 
@@ -104,6 +106,9 @@ public class EnemyAI : MonoBehaviour
         bool leftGrounded = Physics2D.OverlapCircle(_groundCheckLeft.position, _ledgeCheckRadius, _groundLayerMask);
         bool rightGrounded = Physics2D.OverlapCircle(_groundCheckRight.position, _ledgeCheckRadius, _groundLayerMask);
 
+        bool leftWall = Physics2D.OverlapCircle(_wallCheckLeft.position, _ledgeCheckRadius, _groundLayerMask);
+        bool rightWall = Physics2D.OverlapCircle(_wallCheckRight.position, _ledgeCheckRadius, _groundLayerMask);
+
         bool jumpLeft = Physics2D.OverlapCircle(_jumpCheckLeft.position, _jumpCheckRadius, _wallLayerMask);
         bool jumpRight = Physics2D.OverlapCircle(_jumpCheckRight.position, _jumpCheckRadius, _wallLayerMask);
 
@@ -113,13 +118,13 @@ public class EnemyAI : MonoBehaviour
         bool ledgeOnLeft = !leftGrounded && rightGrounded;
         bool ledgeOnRight = !rightGrounded && leftGrounded;
 
-        if (ledgeOnLeft)
+        if (ledgeOnLeft || leftWall)
         {
             _direction = 1;
 
             velocity.x = 0f;
         }
-        else if (ledgeOnRight)
+        else if (ledgeOnRight || rightWall)
         {
             _direction = -1;
 
@@ -227,6 +232,8 @@ public class EnemyAI : MonoBehaviour
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(_groundCheckLeft.position, 0.05f);
             Gizmos.DrawWireSphere(_groundCheckRight.position, 0.05f);
+            Gizmos.DrawWireSphere(_wallCheckLeft.position, 0.05f);
+            Gizmos.DrawWireSphere(_wallCheckRight.position, 0.05f);
 
             Gizmos.color = Color.magenta;
             Gizmos.DrawWireSphere(_jumpCheckLeft.position, _jumpCheckRadius);
