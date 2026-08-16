@@ -24,6 +24,7 @@ public class PlayerItemCollector : MonoBehaviour
         if (collision.CompareTag("Key") && collision.gameObject.activeSelf)
         {
             _keyIcon.SetActive(true);
+            Destroy(collision.gameObject);
 
             _keyCounter += 1;
             _counterText.text = _keyCounter.ToString();

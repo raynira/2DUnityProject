@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _airAcceleration = 20;
     [SerializeField] private float _airDeceleration = 10f;
     private float _defaultSpeed;
+    private bool _isFacingRight = true;
 
     [Header("Jump Parameters")]
     [SerializeField] private float _coyoteTime = 0.1f;
@@ -24,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask _groundLayerMask;
 
     private Rigidbody2D _rigidBody;
+    public Animator animator;
 
     private bool _grounded = false;
     private bool _jumpPressed = false;
@@ -60,6 +62,23 @@ public class PlayerMovement : MonoBehaviour
         }
         else
             _timeSinceLeftGround = 0;
+
+        animator.SetFloat("YVelocity", _rigidBody.linearVelocity.y);
+        animator.SetFloat("Magnitude", Mathf.Abs(_rigidBody.linearVelocity.x));
+    }
+
+    private void Flip()
+    {
+        if ((_isFacingRight && _rigidBody.linearVelocity.x < 0) || (!_isFacingRight && _rigidBody.linearVelocity.x > 0))
+        {
+            _isFacingRight = !_isFacingRight;
+
+            Vector3 scale = transform.localScale;
+
+            scale.x *= -1f;
+
+            transform.localScale = scale;
+        }
     }
 
     private void OnEnable()
@@ -95,6 +114,11 @@ public class PlayerMovement : MonoBehaviour
 
         velocity.y += _gravity * Time.fixedDeltaTime;
 
+        if (_grounded && velocity.y < 0)
+        {
+            velocity.y = 0f;
+        }
+
         float horizontalDirection = Mathf.Clamp(InputManager.Instance.HorizontalInput, -1, 1) * _runSpeed;
         float acceleration = 0;
 
@@ -124,6 +148,8 @@ public class PlayerMovement : MonoBehaviour
         // jump
         if ((_grounded || coyote) && (_jumpPressed || earlyJump))
         {
+            animator.SetTrigger("Jump");
+
             // SfxManagar.Instance.PlaySFX(_jumpSFX);
             velocity.y = _jumpSpeed;
             _grounded = false;
@@ -147,6 +173,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
         _rigidBody.linearVelocity = velocity;
+
+        Flip();
 
         _jumpPressed = false;
     }

@@ -3,10 +3,12 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     public GameObject _melee;
+    public Animator animator;
 
-    bool _isAttacking = false;
-    float _attackDuration = 0.3f;
-    float _attackTimer = 0f;
+    public float _attackDuration = 0.3f;
+
+    private bool _isAttacking = false;
+    private float _attackTimer = 0f;
 
     void OnEnable()
     {
@@ -26,14 +28,16 @@ public class PlayerAttack : MonoBehaviour
     void Update()
     {
         CheckMeleeTimer();
+
+        animator.SetBool("IsAttacking", _isAttacking);
     }
 
     private void OnAttack()
     {
         if (!_isAttacking)
         {
-            _melee.SetActive(true);
             _isAttacking = true;
+            _melee.SetActive(true);
         }
     }
 
