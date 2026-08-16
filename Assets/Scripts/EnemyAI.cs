@@ -7,12 +7,15 @@ public class EnemyAI : MonoBehaviour
     public int _maxEnemyHealth = 2;
     private int _currentEnemyHealth;
 
+    [SerializeField] private Transform _sprite;
+
     [Header("Movement Speed Parameters")]
     [SerializeField] private Rigidbody2D _rigidbody;
     [SerializeField] private float _movementSpeed = 1.75f;
     [SerializeField] private float _acceleration = 60;
     [SerializeField] private float _deceleration = 70;
     private float _defaultSpeed;
+    private bool _isFacingRight = true;
 
     [Header("Jump Parameters")]
     [SerializeField] private float _gravity = -35;
@@ -48,6 +51,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float _chaseDeadZone = 0.05f;
     [SerializeField] private float _seekDuration = 2f;
 
+    private Rigidbody2D _rigidBody;
     private bool _grounded = false;
     private float _direction = -1;
 
@@ -57,6 +61,7 @@ public class EnemyAI : MonoBehaviour
 
     void Start()
     {
+        _rigidBody = GetComponent<Rigidbody2D>();
         _currentEnemyHealth = _maxEnemyHealth;
         _defaultSpeed = _movementSpeed;
     }
@@ -91,6 +96,20 @@ public class EnemyAI : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             _movementSpeed = _defaultSpeed;
+        }
+    }
+
+    private void Flip()
+    {
+        if ((_isFacingRight && _rigidBody.linearVelocity.x < 0) || (!_isFacingRight && _rigidBody.linearVelocity.x > 0))
+        {
+            _isFacingRight = !_isFacingRight;
+
+            Vector3 scale = _sprite.localScale;
+
+            scale.x *= -1f;
+
+            _sprite.localScale = scale;
         }
     }
 
@@ -220,6 +239,8 @@ public class EnemyAI : MonoBehaviour
         velocity.x += finallAcceleration;
 
         _rigidbody.linearVelocity = velocity;
+
+        Flip();
     }
 
     private void OnDrawGizmos()

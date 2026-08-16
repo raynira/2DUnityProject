@@ -26,6 +26,8 @@ public class PlayerItemCollector : MonoBehaviour
             _keyIcon.SetActive(true);
             Destroy(collision.gameObject);
 
+            if (_keyCounter == 1) return;
+
             _keyCounter += 1;
             _counterText.text = _keyCounter.ToString();
         }
