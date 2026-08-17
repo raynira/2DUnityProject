@@ -67,9 +67,9 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("Magnitude", Mathf.Abs(_rigidBody.linearVelocity.x));
     }
 
-    private void Flip()
+    private void Flip(float direction)
     {
-        if ((_isFacingRight && _rigidBody.linearVelocity.x < 0) || (!_isFacingRight && _rigidBody.linearVelocity.x > 0))
+        if ((_isFacingRight && direction < 0) || (!_isFacingRight && direction > 0))
         {
             _isFacingRight = !_isFacingRight;
 
@@ -145,7 +145,6 @@ public class PlayerMovement : MonoBehaviour
         bool coyote = _timeSinceLeftGround <= _coyoteTime;
         bool earlyJump = _timeSinceJumpPressed <= _earlyJumpTime;
 
-        // jump
         if ((_grounded || coyote) && (_jumpPressed || earlyJump))
         {
             animator.SetTrigger("Jump");
@@ -158,7 +157,6 @@ public class PlayerMovement : MonoBehaviour
             _timeSinceJumpPressed = float.MaxValue;
         }
 
-        // double jump
         if (_grounded && !_doubleJump)
         {
             _doubleJump = true;
@@ -174,7 +172,7 @@ public class PlayerMovement : MonoBehaviour
 
         _rigidBody.linearVelocity = velocity;
 
-        Flip();
+        Flip(InputManager.Instance.HorizontalInput);
 
         _jumpPressed = false;
     }

@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
-    public TrapController damage;
     public int _maxEnemyHealth = 2;
     private int _currentEnemyHealth;
 
@@ -78,13 +77,6 @@ public class EnemyAI : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Obstacle"))
-        {
-            if (damage._trapDamage > 0)
-            {
-                TakeDamage(damage._trapDamage);
-            }
-        }
         if (collision.gameObject.CompareTag("Player"))
         {
             _movementSpeed = 0f;

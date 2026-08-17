@@ -4,6 +4,7 @@ public class TrapController : MonoBehaviour
 {
     [Header("Damage Parameters")]
     public PlayerHealth player;
+    public EnemyAI enemy;
     public enum EnemyType
     {
         Trap,
@@ -36,6 +37,7 @@ public class TrapController : MonoBehaviour
         {
             if (_enemyType == EnemyType.Trap)
             {
+                enemy.TakeDamage(_trapDamage);
                 HandleBounce(collision.gameObject);
             }
         }
