@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     public GameObject _gameOverScreen;
     public GameObject _gameHealthUI;
     public GameObject _gameKeyUI;
+    public PlayerHealthSO healthSO;
 
     [Header("Overlay Parameters")]
     public Tilemap _vignetteTilemap;
@@ -38,7 +39,7 @@ public class GameController : MonoBehaviour
         _gameHealthUI.SetActive(true);
         _gameKeyUI.SetActive(true);
 
-        UpdateVignette(_playerHealth.CurrentHealth);
+        UpdateVignette(healthSO.Value);
     }
 
     public void UpdateVignette(int health)
@@ -70,6 +71,8 @@ public class GameController : MonoBehaviour
         _gameHealthUI.SetActive(true);
         _gameKeyUI.SetActive(true);
         _gameOverScreen.SetActive(false);
+
+        healthSO.ResetState();
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1f;

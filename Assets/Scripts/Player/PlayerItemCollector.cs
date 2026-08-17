@@ -1,10 +1,9 @@
-using TMPro;
 using UnityEngine;
 
 public class PlayerItemCollector : MonoBehaviour
 {
     private int _keyCounter = 0;
-    public TMP_Text _counterText;
+    public TextMesh _counterText;
     public GameObject _keyIcon;
 
     void Start()

@@ -10,7 +10,7 @@ public class Health : MonoBehaviour
 
     private List<Image> hearts = new List<Image>();
 
-    public void SetMaxHearts(int maxHearts)
+    public void SetHearts(int maxHealth, int currentHealth)
     {
         foreach (Image heart in hearts)
         {
@@ -19,10 +19,10 @@ public class Health : MonoBehaviour
 
         hearts.Clear();
 
-        for (int i = 0; i < maxHearts; i++)
+        for (int i = 0; i < maxHealth; i++)
         {
             Image newHeart = Instantiate(_heartPrefab, transform);
-            newHeart.sprite = _fullHeartSprite;
+            newHeart.sprite = (i < currentHealth) ? _fullHeartSprite : _emptyHeartSprite;
             hearts.Add(newHeart);
         }
     }
@@ -31,14 +31,7 @@ public class Health : MonoBehaviour
     {
         for (int i = 0; i < hearts.Count; i++)
         {
-            if (i < currentHealth)
-            {
-                hearts[i].sprite = _fullHeartSprite;
-            }
-            else
-            {
-                hearts[i].sprite = _emptyHeartSprite;
-            }
+            hearts[i].sprite = (i < currentHealth) ? _fullHeartSprite : _emptyHeartSprite;
         }
     }
 }

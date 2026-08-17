@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Health Parameters")]
+    public PlayerHealthSO healthSO;
     public Health health;
     public GameController vignette;
     public int _maxHealth = 3;
@@ -23,13 +24,21 @@ public class PlayerHealth : MonoBehaviour
 
     void Awake()
     {
-        _currentHealth = _maxHealth;
+        if (healthSO.IsInitialized)
+        {
+            _currentHealth = healthSO.Value;
+        }
+        else
+        {
+            _currentHealth = _maxHealth;
+            healthSO.Value = _currentHealth;
+            healthSO.IsInitialized = true;
+        }
     }
-
 
     void Start()
     {
-        health.SetMaxHearts(_maxHealth);
+        health.SetHearts(_maxHealth, _currentHealth);
 
         PlayerHealthItem.OnHealthCollect += Heal;
 
@@ -58,6 +67,8 @@ public class PlayerHealth : MonoBehaviour
         vignette.UpdateVignette(_currentHealth);
 
         Debug.Log("Player healed " + amount + "health, current health: " + _currentHealth);
+
+        healthSO.Value = _currentHealth;
     }
 
     public void TakeDamage(int damage)
@@ -81,6 +92,8 @@ public class PlayerHealth : MonoBehaviour
         }
 
         Debug.Log("Player took " + damage + ", current health: " + _currentHealth);
+
+        healthSO.Value = _currentHealth;
     }
 
     private IEnumerator FlashRed()

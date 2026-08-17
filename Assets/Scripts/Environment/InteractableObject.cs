@@ -6,7 +6,7 @@ public class InteractableObject : MonoBehaviour, IInteractable
 {
     public bool _isPulled { get; private set; }
     public Sprite _pulledSprite;
-    public TMP_Text _keyCollected;
+    public TextMesh _keyCollected;
     public string _nextLevelName;
 
     public bool CanInteract()
