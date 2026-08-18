@@ -8,7 +8,7 @@ public class GameController : MonoBehaviour
 
     [Header ("UI Parameters")]
     public GameObject _gameOverScreen;
-    public GameObject _gameVictoryScreen = null;
+    public GameObject _gameVictoryScreen;
     public GameObject _gameHealthUI;
     public GameObject _gameKeyUI;
     public PlayerHealthSO healthSO;
@@ -86,6 +86,16 @@ public class GameController : MonoBehaviour
         healthSO.ResetState();
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        Time.timeScale = 1f;
+    }
+
+    public void ExitToMainMenu()
+    {
+        healthSO.ResetState();
+
+        SceneManager.LoadScene("MainMenu");
+
         Time.timeScale = 1f;
     }
 

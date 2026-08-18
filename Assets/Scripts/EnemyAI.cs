@@ -85,12 +85,6 @@ public class EnemyAI : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             _movementSpeed = 0f;
-
-            if (Time.time - _lastAttackTime < _attackCooldown) return;
-
-            player.TakeDamage(_damage);
-
-            _lastAttackTime = Time.time;
         }
     }
 
