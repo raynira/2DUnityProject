@@ -3,7 +3,12 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
+    public PlayerHealth player;
+    public int _damage;
+    public float _attackCooldown;
     public int _maxEnemyHealth = 2;
+
+    private float _lastAttackTime;
     private int _currentEnemyHealth;
 
     [SerializeField] private Transform _sprite;
@@ -80,6 +85,24 @@ public class EnemyAI : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             _movementSpeed = 0f;
+
+            if (Time.time - _lastAttackTime < _attackCooldown) return;
+
+            player.TakeDamage(_damage);
+
+            _lastAttackTime = Time.time;
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (Time.time - _lastAttackTime < _attackCooldown) return;
+
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            player.TakeDamage(_damage);
+
+            _lastAttackTime = Time.time;
         }
     }
 

@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour
 
     [Header ("UI Parameters")]
     public GameObject _gameOverScreen;
+    public GameObject _gameVictoryScreen = null;
     public GameObject _gameHealthUI;
     public GameObject _gameKeyUI;
     public PlayerHealthSO healthSO;
@@ -36,6 +37,7 @@ public class GameController : MonoBehaviour
     {
         PlayerHealth.OnPlayerDied += GameOverScreen;
         _gameOverScreen.SetActive(false);
+        _gameVictoryScreen.SetActive(false);
         _gameHealthUI.SetActive(true);
         _gameKeyUI.SetActive(true);
 
@@ -62,6 +64,15 @@ public class GameController : MonoBehaviour
         _gameHealthUI.SetActive(false);
         _gameKeyUI.SetActive(false);
         _gameOverScreen.SetActive(true);
+
+        Time.timeScale = 0;
+    }
+
+    public void VictoryScreen()
+    {
+        _gameHealthUI.SetActive(false);
+        _gameKeyUI.SetActive(false);
+        _gameVictoryScreen.SetActive(true);
 
         Time.timeScale = 0;
     }

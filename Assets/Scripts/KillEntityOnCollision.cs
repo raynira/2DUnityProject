@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class KillPlayerOnCollision : MonoBehaviour
+public class KillEntityOnCollision : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -8,6 +8,10 @@ public class KillPlayerOnCollision : MonoBehaviour
         {
             collision.gameObject.SetActive(false);
             GameController.Instance.GameOverScreen();
+        }
+        else
+        {
+            Destroy(collision.gameObject);
         }
     }
 }

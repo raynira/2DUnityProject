@@ -5,14 +5,7 @@ public class TrapController : MonoBehaviour
     [Header("Damage Parameters")]
     public PlayerHealth player;
     public EnemyAI enemy;
-    public enum EnemyType
-    {
-        Trap,
-        Enemy
-    }
-    public EnemyType _enemyType;
-    public int _trapDamage = 1;
-    public int _enemyDamage = 1;
+    public int _damage = 1;
 
     [Header("Bounce Parameters")]
     public float _bounceForce = 10f;
@@ -21,25 +14,14 @@ public class TrapController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            switch (_enemyType)
-            {
-                case EnemyType.Trap:
-                    player.TakeDamage(_trapDamage);
+            player.TakeDamage(_damage);
 
-                    HandleBounce(collision.gameObject);
-                    break;
-                case EnemyType.Enemy:
-                    player.TakeDamage(_enemyDamage);
-                    break;
-            }
+            HandleBounce(collision.gameObject);
         }
         else if (collision.gameObject.CompareTag("Enemy"))
         {
-            if (_enemyType == EnemyType.Trap)
-            {
-                enemy.TakeDamage(_trapDamage);
-                HandleBounce(collision.gameObject);
-            }
+            enemy.TakeDamage(_damage);
+            HandleBounce(collision.gameObject);
         }
     }
 

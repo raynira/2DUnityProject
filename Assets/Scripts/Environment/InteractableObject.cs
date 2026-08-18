@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,6 +7,9 @@ public class InteractableObject : MonoBehaviour, IInteractable
     public Sprite _pulledSprite;
     public TextMesh _keyCollected;
     public string _nextLevelName;
+
+    public FinishFlag finish;
+    public LevelsSurvivedSO survivedSO;
 
     public bool CanInteract()
     {
@@ -22,7 +24,15 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
         PullLever(true);
 
-        LoadNextLevel();
+        if (finish != null)
+        {
+            finish.LeverPulled();
+        }
+        else
+        {
+            survivedSO.Value++;
+            SceneManager.LoadScene(_nextLevelName);
+        }
     }
 
     public void PullLever(bool pulled)
@@ -31,10 +41,5 @@ public class InteractableObject : MonoBehaviour, IInteractable
         {
             GetComponent<SpriteRenderer>().sprite = _pulledSprite;
         }
-    }
-
-    private void LoadNextLevel()
-    {
-        SceneManager.LoadScene(_nextLevelName);
     }
 }

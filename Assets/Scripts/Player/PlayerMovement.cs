@@ -54,6 +54,7 @@ public class PlayerMovement : MonoBehaviour
             if (_earlyJumpTimerActive)
             {
                 _timeSinceJumpPressed += Time.deltaTime;
+
                 if (_timeSinceJumpPressed > _earlyJumpTime)
                 {
                     _earlyJumpTimerActive = false;
