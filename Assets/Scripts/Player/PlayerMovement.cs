@@ -150,7 +150,8 @@ public class PlayerMovement : MonoBehaviour
         {
             animator.SetTrigger("Jump");
 
-            // SfxManagar.Instance.PlaySFX(_jumpSFX);
+            SFXManager.Play("Jump");
+
             velocity.y = _jumpSpeed;
             _grounded = false;
             _jumpPressed = false;
@@ -165,7 +166,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (!_grounded && _doubleJump && _jumpPressed)
         {
-            // SfxManagar.Instance.PlaySFX(_jumpSFX);
+            SFXManager.Play("Jump");
+
             _doubleJump = false;
             velocity.y = _jumpSpeed;
             _jumpPressed = false;

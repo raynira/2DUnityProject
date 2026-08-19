@@ -12,6 +12,7 @@ public class EnemyAI : MonoBehaviour
     private int _currentEnemyHealth;
 
     [SerializeField] private Transform _sprite;
+    private EntityFlashRed _entity;
 
     [Header("Movement Speed Parameters")]
     [SerializeField] private Rigidbody2D _rigidbody;
@@ -66,13 +67,19 @@ public class EnemyAI : MonoBehaviour
     void Start()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
+        _entity = _sprite.GetComponent<EntityFlashRed>();
+
         _currentEnemyHealth = _maxEnemyHealth;
         _defaultSpeed = _movementSpeed;
     }
 
     public void TakeDamage(int damage)
     {
+        SFXManager.Play("Hit");
+
         _currentEnemyHealth -= damage;
+
+        StartCoroutine(_entity.FlashRed());
 
         if (_currentEnemyHealth <= 0)
         {

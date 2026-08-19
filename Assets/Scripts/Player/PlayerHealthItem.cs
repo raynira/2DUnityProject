@@ -13,6 +13,8 @@ public class PlayerHealthItem : MonoBehaviour, IItem
     {
         if (player.IsMaxHealth()) return;
 
+        SFXManager.Play("Collect");
+
         OnHealthCollect.Invoke(healAmount);
         Destroy(gameObject);
     }

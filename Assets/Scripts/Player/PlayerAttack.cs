@@ -36,6 +36,8 @@ public class PlayerAttack : MonoBehaviour
     {
         if (!_isAttacking)
         {
+            SFXManager.Play("Attack");
+
             _isAttacking = true;
             _melee.SetActive(true);
         }

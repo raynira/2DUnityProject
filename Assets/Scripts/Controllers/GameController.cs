@@ -35,6 +35,11 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+        StartTransition();
+    }
+
+    async void StartTransition()
+    {
         PlayerHealth.OnPlayerDied += GameOverScreen;
         _gameOverScreen.SetActive(false);
         _gameVictoryScreen.SetActive(false);
@@ -42,6 +47,8 @@ public class GameController : MonoBehaviour
         _gameKeyUI.SetActive(true);
 
         UpdateVignette(healthSO.Value);
+
+        await ScreenFadeTransition.Instance.FadeIn();
     }
 
     public void UpdateVignette(int health)
@@ -61,6 +68,9 @@ public class GameController : MonoBehaviour
 
     public void GameOverScreen()
     {
+        MusicManager.PauseBackgroundMusic();
+        SFXManager.Play("Death");
+
         _gameHealthUI.SetActive(false);
         _gameKeyUI.SetActive(false);
         _gameOverScreen.SetActive(true);
@@ -70,6 +80,9 @@ public class GameController : MonoBehaviour
 
     public void VictoryScreen()
     {
+        MusicManager.PauseBackgroundMusic();
+        SFXManager.Play("Victory");
+
         _gameHealthUI.SetActive(false);
         _gameKeyUI.SetActive(false);
         _gameVictoryScreen.SetActive(true);
@@ -79,6 +92,18 @@ public class GameController : MonoBehaviour
 
     public void RestartGame()
     {
+        SFXManager.Play("Select");
+        MusicManager.PlayBackgroundMusic(true);
+
+        ResetTransition();
+
+        Time.timeScale = 1f;
+    }
+
+    async void ResetTransition()
+    {
+        await ScreenFadeTransition.Instance.FadeOut();
+
         _gameHealthUI.SetActive(true);
         _gameKeyUI.SetActive(true);
         _gameOverScreen.SetActive(false);
@@ -87,16 +112,28 @@ public class GameController : MonoBehaviour
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 
-        Time.timeScale = 1f;
+        await ScreenFadeTransition.Instance.FadeIn();
     }
 
     public void ExitToMainMenu()
     {
+        SFXManager.Play("Select");
+        MusicManager.PlayBackgroundMusic(false);
+
+        ExitTransition();
+
+        Time.timeScale = 1f;
+    }
+
+    async void ExitTransition()
+    {
+        await ScreenFadeTransition.Instance.FadeOut();
+
         healthSO.ResetState();
 
         SceneManager.LoadScene("MainMenu");
 
-        Time.timeScale = 1f;
+        await ScreenFadeTransition.Instance.FadeIn();
     }
 
     void OnDestroy()

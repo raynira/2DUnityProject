@@ -76,6 +76,8 @@ public class PlayerHealth : MonoBehaviour
         if (_isInvincible) return;
         if (_currentHealth <= 0) return;
 
+        SFXManager.Play("Hit");
+
         _lastHitTime = Time.time;
         _currentHealth -= damage;
         _currentHealth = Mathf.Max(_currentHealth, 0);

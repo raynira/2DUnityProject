@@ -22,6 +22,8 @@ public class InteractableObject : MonoBehaviour, IInteractable
     {
         if (!CanInteract()) return;
 
+        SFXManager.Play("Interact");
+
         PullLever(true);
 
         if (finish != null)
@@ -30,9 +32,18 @@ public class InteractableObject : MonoBehaviour, IInteractable
         }
         else
         {
-            survivedSO.Value++;
-            SceneManager.LoadScene(_nextLevelName);
+            FadeTransition();
         }
+    }
+
+    async void FadeTransition()
+    {
+        await ScreenFadeTransition.Instance.FadeOut();
+
+        survivedSO.Value++;
+        SceneManager.LoadScene(_nextLevelName);
+
+        await ScreenFadeTransition.Instance.FadeIn();
     }
 
     public void PullLever(bool pulled)

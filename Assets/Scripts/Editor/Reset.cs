@@ -3,13 +3,12 @@ using UnityEditor;
 using UnityEngine;
 
 [InitializeOnLoad]
-
-public static class EditorReset
+public static class Reset
 {
     private const string HealthSOPath = "Assets/Scripts/ScriptableObjects/HealthSO.asset";
     private const string LevelsSurvivedSOPath = "Assets/Scripts/ScriptableObjects/LevelsSurvivedSO.asset";
 
-    static EditorReset()
+    static Reset()
     {
         EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
     }
